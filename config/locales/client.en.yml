@@ -13,7 +13,7 @@ en:
     number:
       human:
         storage_units:
-          format: ! '%n %u'
+          format: '%n %u'
           units:
             byte:
               one: Byte
@@ -579,7 +579,7 @@ en:
       admin_options_title: "Optional staff settings for this topic"
       auto_close_label: "Auto-close topic time:"
       auto_close_units: "(# of hours, a time, or a timestamp)"
-      auto_close_examples: 'Examples: 24, 17:00, 2013-11-22 14:00'
+      auto_close_examples: 'enter absolute time or number of hours — 24, 17:00, 2013-11-22 14:00'
       auto_close_error: "Please enter a valid value."
 
     notifications:
@@ -752,7 +752,6 @@ en:
         position: "post %{current} of %{total}"
 
       notifications:
-        title: ''
         reasons:
           "3_6": 'You will receive notifications because you are watching this category.'
           "3_5": 'You will receive notifications because you started watching this topic automatically.'
@@ -1144,13 +1143,22 @@ en:
 
     topic_statuses:
       locked:
-        help: "this topic is closed; it no longer accepts new replies"
-      pinned:
-        help: "this topic is pinned; it will display at the top of its category"
+        help: "This topic is closed; it no longer accepts new replies"
       archived:
-        help: "this topic is archived; it is frozen and cannot be changed"
+        help: "This topic is archived; it no longer accepts new replies"
+      unpinned:
+        title: "Unpinned"
+        help: "This topic is unpinned; it will display in default order"
+      pinned_globally:
+        title: "Pinned Globally"
+        help: "This topic is pinned globally; it will display at the top of all lists"
+      pinned:
+        title: "Pinned"
+        help: "This topic is pinned; it will display at the top of its category"
+      archived:
+        help: "This topic is archived; it is frozen and cannot be changed"
       invisible:
-        help: "this topic is invisible; it will not be displayed in topic lists, and can only be accessed via a direct link"
+        help: "This topic is invisible; it will not be displayed in topic lists, and can only be accessed via a direct link"
 
     posts: "Posts"
     posts_long: "there are {{number}} posts in this topic"
@@ -1682,6 +1690,7 @@ en:
           files: 'Files'
           trust: 'Trust Levels'
           security: 'Security'
+          onebox: "Onebox"
           seo: 'SEO'
           spam: 'Spam'
           rate_limits: 'Rate Limits'

@@ -89,23 +89,34 @@ module Jobs
 
         crawled = false
 
-        result = CrawlTopicLink.fetch_beginning(topic_link.url)
-        doc = Nokogiri::HTML(result)
-        if doc
-          title = doc.at('title').try(:inner_text)
-          if title.present?
-            title.gsub!(/\n/, ' ')
-            title.gsub!(/ +/, ' ')
-            title.strip!
+        # Special case: Images
+        # If the link is to an image, put the filename as the title
+        if topic_link.url =~ /\.(jpg|gif|png)$/
+          uri = URI(topic_link.url)
+          filename = File.basename(uri.path)
+          crawled = (TopicLink.where(id: topic_link.id).update_all(["title = ?, crawled_at = CURRENT_TIMESTAMP", filename]) == 1)
+        end
+
+        unless crawled
+          # Fetch the beginning of the document to find the title
+          result = CrawlTopicLink.fetch_beginning(topic_link.url)
+          doc = Nokogiri::HTML(result)
+          if doc
+            title = doc.at('title').try(:inner_text)
             if title.present?
-              crawled = topic_link.update_attributes(title: title[0..255], crawled_at: Time.now)
+              title.gsub!(/\n/, ' ')
+              title.gsub!(/ +/, ' ')
+              title.strip!
+              if title.present?
+                crawled = (TopicLink.where(id: topic_link.id).update_all(['title = ?, crawled_at = CURRENT_TIMESTAMP', title[0..255]]) == 1)
+              end
             end
           end
         end
       rescue Exception
         # If there was a connection error, do nothing
       ensure
-        topic_link.update_column(:crawled_at, Time.now) if !crawled && topic_link.present?
+        TopicLink.where(id: topic_link.id).update_all('crawled_at = CURRENT_TIMESTAMP') if !crawled && topic_link.present?
       end
     end
 

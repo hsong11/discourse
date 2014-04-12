@@ -31,6 +31,8 @@ class TopicViewSerializer < ApplicationSerializer
              :draft_sequence,
              :starred,
              :posted,
+             :unpinned,
+             :pinned_globally,
              :pinned,    # Is topic pinned and viewer hasn't cleared the pin?
              :pinned_at, # Ignores clear pin
              :details,
@@ -41,7 +43,7 @@ class TopicViewSerializer < ApplicationSerializer
              :expandable_first_post
 
   # Define a delegator for each attribute of the topic we want
-  attributes *topic_attributes
+  attributes(*topic_attributes)
   topic_attributes.each do |ta|
     class_eval %{def #{ta}
       object.topic.#{ta}
@@ -144,8 +146,16 @@ class TopicViewSerializer < ApplicationSerializer
   end
   alias_method :include_posted?, :has_topic_user?
 
+  def pinned_globally
+    object.topic.pinned_globally
+  end
+
   def pinned
-    PinnedCheck.new(object.topic, object.topic_user).pinned?
+    PinnedCheck.pinned?(object.topic, object.topic_user)
+  end
+
+  def unpinned
+    PinnedCheck.unpinned?(object.topic, object.topic_user)
   end
 
   def pinned_at
